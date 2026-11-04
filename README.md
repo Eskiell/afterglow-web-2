@@ -22,8 +22,8 @@ Nothing is installed on the console. The pages are static files.
 ```
 
 Open `http://<host>:8000/` in the console's browser, pick **ps4-hen** or
-**GoldHEN**, press start. Tick *autostart* and it goes by itself after five
-seconds.
+**GoldHEN**, then press start. The exploit only begins after that button is
+pressed.
 
 Each run has to begin on that page. The run page arms the chain only when it
 was reached from there, so a browser restoring its last session cannot set it

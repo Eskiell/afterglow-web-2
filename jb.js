@@ -62,10 +62,9 @@ const FROM_LANDING = (function () {
 /* A page the browser restored must do nothing at all. Until this sat here,
    the refusal came only after the WebKit stage had already run in full --
    harmless to the kernel, but pointless work on a page nobody asked to run.
-   Send it back to the start page instead; from there the ordinary route
-   takes over, autostart included, and it arms with a proper referrer and a
-   visible countdown. A probe is exempt: it fires nothing and patches
-   nothing. */
+   Send it back to the start page instead. The user must press start there
+   to arm it with a proper referrer. A probe is exempt: it fires nothing and
+   patches nothing. */
 const SENT_HOME = (function () {
   const want = params.get("afterglow");
   if (!want || want === "probe" || FROM_LANDING) return false;

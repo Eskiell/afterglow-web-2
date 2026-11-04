@@ -8,14 +8,11 @@ var TARGET = {
   goldhen: "log=1&afterglow=run&mode=goldhen",
 };
 
-var AUTOSTART_SECONDS = 5;
 var STORE_KEY = "afterglow.choice";
 
 var form = document.getElementById("pick");
-var autoBox = document.getElementById("auto");
-var countEl = document.getElementById("count");
+var statusEl = document.getElementById("status");
 var cacheEl = document.getElementById("cache");
-var ticker = null;
 var waitingForCache = false;
 
 /* The offline cache, and the one state that must not be run through.
@@ -76,7 +73,7 @@ if (appCache) {
   }
 }
 
-/* The choice is remembered in localStorage, not by any HTTP cache: cache
+/* The payload choice is remembered in localStorage, not by any HTTP cache: cache
    headers decide whether a file is fetched again, never what the page
    remembers. Both accessors are guarded, because storage can be unavailable
    or throw outright, and the page has to work either way. */
@@ -84,7 +81,7 @@ function remember() {
   try {
     localStorage.setItem(
       STORE_KEY,
-      JSON.stringify({ payload: picked(), autostart: autoBox.checked }),
+      JSON.stringify({ payload: picked() }),
     );
   } catch (e) {}
 }
@@ -102,7 +99,6 @@ function restore() {
     );
     if (radio) radio.checked = true;
   }
-  if (typeof saved.autostart === "boolean") autoBox.checked = saved.autostart;
 }
 
 function picked() {
@@ -111,36 +107,15 @@ function picked() {
 }
 
 function start() {
-  stopClock();
-  /* Not a refusal -- a wait. The run begins by itself once the files are in. */
+  /* A button press made while the cache is busy continues once it is ready. */
   if (cacheBusy()) {
     waitingForCache = true;
-    countEl.textContent = "waiting for the cache";
+    statusEl.textContent = "waiting for the cache";
     cacheNote();
     return;
   }
+  statusEl.textContent = "";
   location.href = "jb.html?" + TARGET[picked()];
-}
-
-function stopClock() {
-  if (ticker !== null) {
-    clearInterval(ticker);
-    ticker = null;
-  }
-  countEl.textContent = "";
-}
-
-function startClock() {
-  var left = AUTOSTART_SECONDS;
-  countEl.textContent = "starting in " + left + "s";
-  ticker = setInterval(function () {
-    left -= 1;
-    if (left <= 0) {
-      start();
-      return;
-    }
-    countEl.textContent = "starting in " + left + "s";
-  }, 1000);
 }
 
 form.addEventListener("submit", function (ev) {
@@ -148,21 +123,9 @@ form.addEventListener("submit", function (ev) {
   start();
 });
 
-form.addEventListener("change", function (ev) {
+form.addEventListener("change", function () {
   remember();
-  if (ev.target === autoBox) {
-    if (autoBox.checked) startClock();
-    else stopClock();
-    return;
-  }
-  /* Switching payload while the clock runs restarts it, so what is counting
-     down is always what is actually selected. */
-  if (ev.target.name === "payload" && autoBox.checked) {
-    stopClock();
-    startClock();
-  }
 });
 
 restore();
 cacheNote();
-if (autoBox.checked) startClock();
