@@ -121,16 +121,6 @@ body {
   vertical-align: middle;
 }
 
-/* The autostart switch is a different kind of choice from the payload
-   radios, so it sits apart from them rather than looking like a third one. */
-.opt-auto {
-  margin-top: 16px;
-  border-style: dashed;
-  background: none;
-  color: var(--dim);
-  font-size: 14px;
-}
-
 .btn {
   display: block;
   width: 100%;
@@ -151,7 +141,7 @@ body {
   outline: none;
 }
 
-.count {
+.status {
   margin: 12px 0 0;
   min-height: 1.2em;
   color: var(--ok);
